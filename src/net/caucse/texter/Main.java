@@ -40,6 +40,10 @@ public class Main {
 				case 'f':
 					method = new TermFrequencyMethod();
 					break;
+				case 'i':
+				case 'I':
+					method = new TFIDFMethod();
+					break;
 				case 'D':
 				case 'd':
 					if (arg.length() != 6) {
@@ -123,7 +127,7 @@ public class Main {
 	}
 	
 	public static void printUsageAndExit() {
-		System.err.println("[Usage] java (-t | -f | -d%mm%dd) (-v vertex_file) words_filename");
+		System.err.println("[Usage] java (-t | -f | -i | -d%mm%dd) (-v vertex_file) words_filename");
 		System.err.println("[Options]");
 		System.err.println(" methods: if not set, topic map is selected as default value");
 		System.err.println("  -t calculate topic map. default value");
