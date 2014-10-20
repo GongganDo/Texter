@@ -75,7 +75,7 @@ public class TFIDFMethod implements Method {
 			return;
 		}
 		
-		boolean printString = words == null || words.isEmpty();
+		boolean printString = !(words == null || words.isEmpty());
 		
 		for (HashMap<Integer, Double> tfidf : score) {
 			Iterator<Double> avgIter = scoreAvg.iterator();
