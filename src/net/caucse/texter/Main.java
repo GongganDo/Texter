@@ -128,6 +128,7 @@ public class Main {
 		System.err.println(" methods: if not set, topic map is selected as default value");
 		System.err.println("  -t calculate topic map. default value");
 		System.err.println("  -f calculate term frequency");
+		System.err.println("  -i calculate tf-idf and print at least average");
 		System.err.println("  -d%mm%dd calculate daily issue using month and day (e.g. -d0301 -> 1st March)");
 		System.err.println(" print option: if set, print index-value pair and to vertex_file, if not set, print string-value pair");
 		System.err.println("  -v filename string-index pair");
