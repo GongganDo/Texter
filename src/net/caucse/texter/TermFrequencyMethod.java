@@ -11,6 +11,7 @@ public class TermFrequencyMethod implements Method {
 	private HashMap<Integer, int[]> tf;
 	
 	private int[] sum;
+	@SuppressWarnings("unused")
 	private double docSize;
 
 	@Override
