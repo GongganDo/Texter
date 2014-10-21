@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import net.caucse.paperlibrary.IndexSet;
-import net.caucse.paperlibrary.WordDocument;
+import net.caucse.paperlibrary.WordList;
 
 public class DailyIssueMethod implements Method {
 	
@@ -18,8 +18,8 @@ public class DailyIssueMethod implements Method {
 	}
 
 	@Override
-	public void run(Collection<WordDocument> docs, IndexSet<String> word) {
-		ArrayList<WordDocument> list = new ArrayList<WordDocument>();
+	public void run(Collection<WordList> docs, IndexSet<String> word) {
+		ArrayList<WordList> list = new ArrayList<WordList>();
 	}
 
 	@Override

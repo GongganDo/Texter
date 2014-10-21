@@ -4,10 +4,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.caucse.paperlibrary.IndexSet;
-import net.caucse.paperlibrary.WordDocument;
+import net.caucse.paperlibrary.WordList;
 
 public class TFIDFMethod implements Method {
 	
@@ -15,19 +16,25 @@ public class TFIDFMethod implements Method {
 	private ArrayList<Double> scoreAvg;
 
 	@Override
-	public void run(Collection<WordDocument> docs, IndexSet<String> word) {
+	public void run(Collection<WordList> docs, IndexSet<String> word) {
 		score = new ArrayList<HashMap<Integer, Double>>();
 		scoreAvg = new ArrayList<Double>();
 		
 		HashMap<Integer, Double> idf = new HashMap<Integer, Double>();
-		for (WordDocument doc : docs) {
-			for (String w : doc.keySet()) {
+		for (WordList doc : docs) {
+			HashSet<String> wordSet = new HashSet<String>();
+			for (String w : doc) {
+				if (wordSet.contains(w)) {
+					continue;
+				}
+				
 				int i = word.getIndex(w);
 				if (idf.containsKey(i)) {
 					idf.put(i, idf.get(i)+1);
 				} else {
 					idf.put(i, 1.0);
 				}
+				wordSet.add(w);
 			}
 		}
 		
@@ -37,13 +44,21 @@ public class TFIDFMethod implements Method {
 		}
 		
 		
-		for (WordDocument doc : docs) {
+		for (WordList doc : docs) {
 			// calculate tf-idf
+			HashMap<Integer, Integer> tf = new HashMap<Integer, Integer>();
+			for (String w : doc) {
+				int i = word.getIndex(w);
+				if (tf.containsKey(i)) {
+					tf.put(i, tf.get(i)+1);
+				} else {
+					tf.put(i, 1);
+				}
+			}
 			HashMap<Integer, Double> tfidf = new HashMap<Integer, Double>(word.size());
 			double tfidfMax = Double.MIN_VALUE, tfidfMin = Double.MAX_VALUE;
-			for (String w : doc.keySet()) {
-				int i = word.getIndex(w);
-				double tfValue = Math.log(doc.get(w) + 1);
+			for (int i : tf.keySet()) {
+				double tfValue = Math.log(tf.get(i) + 1);
 				double tfidfValue = tfValue * idf.get(i);
 				tfidf.put(i, tfidfValue);
 				tfidfMax = Math.max(tfidfMax, tfidfValue);

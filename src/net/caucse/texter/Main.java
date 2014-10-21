@@ -6,8 +6,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import net.caucse.paperlibrary.IndexSet;
-import net.caucse.paperlibrary.WordDocument;
-import net.caucse.paperlibrary.WordDocumentReader;
+import net.caucse.paperlibrary.WordList;
+import net.caucse.paperlibrary.WordListReader;
 
 
 public class Main {
@@ -85,18 +85,20 @@ public class Main {
 		
 		PrintStream ps_v = null, ps_e = System.out;
 		try {
-			ArrayList<WordDocument> docs = new ArrayList<WordDocument>();
+			ArrayList<WordList> lists = new ArrayList<WordList>();
 			IndexSet<String> word = new IndexSet<String>();
-			WordDocumentReader wdr = new WordDocumentReader(wordDocumentFilename);
-			WordDocument doc;
-			while ((doc = wdr.read()) != null) {
-				word.addAll(doc.keySet());
-				docs.add(doc);
+			WordListReader wlr = new WordListReader(wordDocumentFilename);
+			WordList list;
+			while ((list = wlr.read()) != null) {
+				for (String w : list) {
+					word.add(w);
+				}
+				lists.add(list);
 			}
-			wdr.close();
+			wlr.close();
 			System.err.println("End Input");
 
-			method.run(docs, word);
+			method.run(lists, word);
 			
 			if (vertexFilename != null) {
 				method.print(ps_e);

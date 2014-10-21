@@ -3,33 +3,34 @@ package net.caucse.texter;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.caucse.paperlibrary.IndexSet;
-import net.caucse.paperlibrary.WordDocument;
+import net.caucse.paperlibrary.WordList;
 
 public class TermFrequencyMethod implements Method {
-	private HashMap<Integer, int[]> tf;
+	private HashMap<Integer, Integer> tf;
 	
-	private int[] sum;
-	@SuppressWarnings("unused")
-	private double docSize;
+	private int docSize;
 
 	@Override
-	public void run(Collection<WordDocument> docs, IndexSet<String> word) {
-		tf = new HashMap<Integer, int[]>(word.size());
-		sum = new int[] {0,0};
-		for (WordDocument doc : docs) {
-			for (String w : doc.keySet()) {
-				int idx = word.getIndex(w);
-				int val = doc.get(w);
-				if (tf.containsKey(idx)) {
-					int[] ia = tf.get(idx);
-					++ia[0]; ia[1] += val;
-				} else {
-					tf.put(idx, new int[] {1, val});
+	public void run(Collection<WordList> docs, IndexSet<String> word) {
+		tf = new HashMap<Integer, Integer>(word.size());
+		for (WordList doc : docs) {
+			HashSet<String> wordSet = new HashSet<String>();
+			for (String w : doc) {
+				if (wordSet.contains(w)) {
+					continue;
 				}
-				++sum[0];
-				sum[1] += val;
+				
+				int idx = word.getIndex(w);
+				if (tf.containsKey(idx)) {
+					int ia = tf.get(idx);
+					tf.put(idx, ++ia);
+				} else {
+					tf.put(idx, 1);
+				}
+				wordSet.add(w);
 			}
 		}
 		
@@ -50,19 +51,20 @@ public class TermFrequencyMethod implements Method {
 		
 		boolean printString = !(words == null || words.isEmpty());
 		
-		int nv = words.size();
+		//int nv = words.size();
 		
 		for (int i : tf.keySet()) {
-			int[] ia = tf.get(i);
+			int ia = tf.get(i);
 			// Laplace Smoothing
-			double val = (ia[1]+1) / (double)(sum[1]+nv);
+			//double val = (ia+1) / (double)(sum[1]+nv);
+			double val = (double)ia / docSize;
 			if (printString) {
 				edge.printf("%s %g\n", words.getAsIndex(i), val);
 			} else {
 				edge.printf("%d %g\n", i, val);
 			}
 		}
-		edge.println(sum[1]+nv);
+		//edge.println(sum[1]+nv);
 	}
 
 }
