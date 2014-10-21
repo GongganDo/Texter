@@ -61,8 +61,9 @@ public class NGramMethod implements Method{
 					edge.printf("%d ", i);
 				}
 			}
-			int idx = ngramSet.getIndex(list);
-			System.out.println(ngramFre.get(idx));
+			//int idx = ngramSet.getIndex(list);
+			//System.out.println(ngramFre.get(idx));
+			System.out.println();
 		}
 	}
 
