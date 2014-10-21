@@ -44,6 +44,18 @@ public class Main {
 				case 'I':
 					method = new TFIDFMethod();
 					break;
+				case 'n':
+				case 'N':
+					if (arg.length() < 3) {
+						printUsageAndExit();
+					}
+					try {
+						int n = Integer.parseInt(arg.substring(2));
+						method = new NGramMethod(n);
+					} catch (NumberFormatException e) {
+						printUsageAndExit();
+					}
+					break;
 				case 'D':
 				case 'd':
 					if (arg.length() != 6) {
