@@ -12,7 +12,7 @@ import net.caucse.paperlibrary.WordList;
 
 public class TopicMapMethod implements Method {
 	
-	private HashMap<Integer, Map<Integer, Float>> cword;
+	private HashMap<Integer, Map<Integer, Double>> cword;
 	private double avg;
 
 	@Override
@@ -32,7 +32,7 @@ public class TopicMapMethod implements Method {
 		System.err.println("Number of word: " + words.size());
 		System.err.println("End Number of Word");
 		
-		cword = new HashMap<Integer, Map<Integer, Float>>();
+		cword = new HashMap<Integer, Map<Integer, Double>>();
 		for (WordList d : docs) {
 			/*String[] dword = d.keySet().toArray(new String[0]);
 			int len = dword.length;
@@ -49,16 +49,16 @@ public class TopicMapMethod implements Method {
 					if (iIndex == jIndex) continue;
 					//String wi = dword[i], wj = dword[j];
 					if (cword.containsKey(iIndex)) {
-						Map<Integer, Float> inmap = cword.get(iIndex);
+						Map<Integer, Double> inmap = cword.get(iIndex);
 						if (inmap.containsKey(iIndex)) {
-							float value = inmap.get(jIndex);
+							double value = inmap.get(jIndex);
 							inmap.put(jIndex, ++value);
 						} else {
-							inmap.put(jIndex, 1.f);
+							inmap.put(jIndex, 1.0);
 						}
 					} else {
-						Map<Integer, Float> inmap = new HashMap<>();
-						inmap.put(jIndex, 1.f);
+						Map<Integer, Double> inmap = new HashMap<>();
+						inmap.put(jIndex, 1.0);
 						cword.put(iIndex, inmap);
 					}
 				}
@@ -69,14 +69,14 @@ public class TopicMapMethod implements Method {
 		//RelationTable rTable = new RelationTable();
 		int n = docs.size();
 		for (int i : cword.keySet()) {
-			Map<Integer, Float> inmap = cword.get(i);
+			Map<Integer, Double> inmap = cword.get(i);
 			for (int j : inmap.keySet()) {
 				if (i == j) continue;
 				try {
-					float cij = inmap.get(j);
+					double cij = inmap.get(j);
 					int ni = nword.get(i);
 					int nj = nword.get(j);
-					float result = (cij / ni) * (float)Math.log(n / nj);
+					double result = (cij / ni) * Math.log(n / nj);
 					inmap.put(j, result);
 					//rTable.put(i, j, result);
 				} catch (NullPointerException e) {
@@ -91,14 +91,14 @@ public class TopicMapMethod implements Method {
 		double sum = 0.0;
 		int count = 0;
 		for (int i : cword.keySet()) {
-			Map<Integer, Float> inmap = cword.get(i);
-			float max = Collections.max(inmap.values());
-			float min = Collections.min(inmap.values());
+			Map<Integer, Double> inmap = cword.get(i);
+			double max = Collections.max(inmap.values());
+			double min = Collections.min(inmap.values());
 			//System.err.printf("%d: [%f, %f] => ", i, min, max);
 			for (int j : inmap.keySet()) {
-				float value = inmap.get(j);
+				double value = inmap.get(j);
 				value = (value - min) / (max - min);
-				if (Float.isNaN(value)) value = 0.f;
+				if (Double.isNaN(value)) value = 0;
 				inmap.put(j, value);
 				sum += value;
 				++count;
@@ -129,9 +129,9 @@ public class TopicMapMethod implements Method {
 		//rTable.printConnection(min, ps_v, ps_e);
 		int c = 0;
 		for (int i : cword.keySet()) {
-			Map<Integer, Float> inmap = cword.get(i);
+			Map<Integer, Double> inmap = cword.get(i);
 			for (int j : inmap.keySet()) {
-				float value = inmap.get(j);
+				double value = inmap.get(j);
 				if (avg < value) {
 					try {
 						//double rValue = cword.get(key2).get(key);
