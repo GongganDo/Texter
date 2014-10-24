@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import net.caucse.paperlibrary.IndexSet;
 import net.caucse.paperlibrary.WordList;
@@ -23,18 +24,20 @@ public class TFIDFMethod implements Method {
 		HashMap<Integer, Double> idf = new HashMap<Integer, Double>();
 		for (WordList doc : docs) {
 			HashSet<String> wordSet = new HashSet<String>();
-			for (String w : doc) {
-				if (wordSet.contains(w)) {
-					continue;
+			for (List<String> list : doc) {
+				for (String w : list) {
+					if (wordSet.contains(w)) {
+						continue;
+					}
+					
+					int i = word.getIndex(w);
+					if (idf.containsKey(i)) {
+						idf.put(i, idf.get(i)+1);
+					} else {
+						idf.put(i, 1.0);
+					}
+					wordSet.add(w);
 				}
-				
-				int i = word.getIndex(w);
-				if (idf.containsKey(i)) {
-					idf.put(i, idf.get(i)+1);
-				} else {
-					idf.put(i, 1.0);
-				}
-				wordSet.add(w);
 			}
 		}
 		
@@ -47,12 +50,14 @@ public class TFIDFMethod implements Method {
 		for (WordList doc : docs) {
 			// calculate tf-idf
 			HashMap<Integer, Integer> tf = new HashMap<Integer, Integer>();
-			for (String w : doc) {
-				int i = word.getIndex(w);
-				if (tf.containsKey(i)) {
-					tf.put(i, tf.get(i)+1);
-				} else {
-					tf.put(i, 1);
+			for (List<String> list : doc) {
+				for (String w : list) {
+					int i = word.getIndex(w);
+					if (tf.containsKey(i)) {
+						tf.put(i, tf.get(i)+1);
+					} else {
+						tf.put(i, 1);
+					}
 				}
 			}
 			HashMap<Integer, Double> tfidf = new HashMap<Integer, Double>(word.size());
@@ -74,7 +79,7 @@ public class TFIDFMethod implements Method {
 				
 			}
 			score.add(tfidf);
-			scoreAvg.add(tfidfSum / doc.size());
+			scoreAvg.add(tfidfSum / doc.wordSize());
 		}
 	}
 

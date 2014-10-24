@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import net.caucse.paperlibrary.IndexSet;
 import net.caucse.paperlibrary.WordList;
@@ -18,19 +19,21 @@ public class TermFrequencyMethod implements Method {
 		tf = new HashMap<Integer, Integer>(word.size());
 		for (WordList doc : docs) {
 			HashSet<String> wordSet = new HashSet<String>();
-			for (String w : doc) {
-				if (wordSet.contains(w)) {
-					continue;
+			for (List<String> list : doc) {
+				for (String w : list) {
+					if (wordSet.contains(w)) {
+						continue;
+					}
+					
+					int idx = word.getIndex(w);
+					if (tf.containsKey(idx)) {
+						int ia = tf.get(idx);
+						tf.put(idx, ++ia);
+					} else {
+						tf.put(idx, 1);
+					}
+					wordSet.add(w);
 				}
-				
-				int idx = word.getIndex(w);
-				if (tf.containsKey(idx)) {
-					int ia = tf.get(idx);
-					tf.put(idx, ++ia);
-				} else {
-					tf.put(idx, 1);
-				}
-				wordSet.add(w);
 			}
 		}
 		

@@ -25,16 +25,18 @@ public class NGramMethod implements Method{
 	@Override
 	public void run(Collection<WordList> docs, IndexSet<String> word) {
 		for (WordList list : docs) {
-			int size = list.size();
-			if (size < n) continue;
-			for (int i = 0; i < size-n; i++) {
-				ArrayList<Integer> arr = new ArrayList<Integer>(n); 
-				for (int j = 0; j < n; j++) {
-					String w = list.get(j+i);
-					arr.add(word.getIndex(w));
+			for (List<String> l : list) {
+				int size = l.size();
+				if (size < n) continue;
+				for (int i = 0; i < size-n; i++) {
+					ArrayList<Integer> arr = new ArrayList<Integer>(n); 
+					for (int j = 0; j < n; j++) {
+						String w = l.get(j+i);
+						arr.add(word.getIndex(w));
+					}
+					int idx = ngramSet.addReturnIndex(arr);
+					ngramFre.add(idx);
 				}
-				int idx = ngramSet.addReturnIndex(arr);
-				ngramFre.add(idx);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import net.caucse.paperlibrary.IndexSet;
@@ -23,7 +24,9 @@ public class TopicMapMethod implements Method {
 		for (String w : words) {
 			int n = 0;
 			for (WordList d : docs) {
-				if (d.contains(w)) ++n;
+				for (List<String> list : d) {
+					if (list.contains(w)) ++n;
+				}
 			}
 			int index = words.getIndex(w);
 			nword.put(index, n);
@@ -39,27 +42,30 @@ public class TopicMapMethod implements Method {
 			for (int i = 0; i < len; i++) {
 				for (int j = i+1; j < len; j++) {*/
 			
-			HashSet<Integer> wofd = new HashSet<Integer>();
-			for (String w : d) {
-				int i = words.getIndex(w);
-				wofd.add(i);
-			}
-			for (int iIndex : wofd) {
-				for (int jIndex : wofd) {
-					if (iIndex == jIndex) continue;
-					//String wi = dword[i], wj = dword[j];
-					if (cword.containsKey(iIndex)) {
-						Map<Integer, Double> inmap = cword.get(iIndex);
-						if (inmap.containsKey(iIndex)) {
-							double value = inmap.get(jIndex);
-							inmap.put(jIndex, ++value);
+			for (List<String> list : d) {
+			
+				HashSet<Integer> wofd = new HashSet<Integer>();
+				for (String w : list) {
+					int i = words.getIndex(w);
+					wofd.add(i);
+				}
+				for (int iIndex : wofd) {
+					for (int jIndex : wofd) {
+						if (iIndex == jIndex) continue;
+						//String wi = dword[i], wj = dword[j];
+						if (cword.containsKey(iIndex)) {
+							Map<Integer, Double> inmap = cword.get(iIndex);
+							if (inmap.containsKey(iIndex)) {
+								double value = inmap.get(jIndex);
+								inmap.put(jIndex, ++value);
+							} else {
+								inmap.put(jIndex, 1.0);
+							}
 						} else {
+							Map<Integer, Double> inmap = new HashMap<>();
 							inmap.put(jIndex, 1.0);
+							cword.put(iIndex, inmap);
 						}
-					} else {
-						Map<Integer, Double> inmap = new HashMap<>();
-						inmap.put(jIndex, 1.0);
-						cword.put(iIndex, inmap);
 					}
 				}
 			}
