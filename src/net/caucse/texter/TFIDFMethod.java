@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.caucse.paperlibrary.CountMap;
 import net.caucse.paperlibrary.IndexSet;
 import net.caucse.paperlibrary.WordList;
 
@@ -49,15 +50,11 @@ public class TFIDFMethod implements Method {
 		
 		for (WordList doc : docs) {
 			// calculate tf-idf
-			HashMap<Integer, Integer> tf = new HashMap<Integer, Integer>();
+			CountMap<Integer> tf = new CountMap<Integer>();
 			for (List<String> list : doc) {
 				for (String w : list) {
 					int i = word.getIndex(w);
-					if (tf.containsKey(i)) {
-						tf.put(i, tf.get(i)+1);
-					} else {
-						tf.put(i, 1);
-					}
+					tf.add(i);
 				}
 			}
 			HashMap<Integer, Double> tfidf = new HashMap<Integer, Double>(word.size());
