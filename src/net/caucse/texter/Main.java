@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.caucse.paperlibrary.IndexSet;
 import net.caucse.paperlibrary.WordList;
@@ -102,8 +103,10 @@ public class Main {
 			WordListReader wlr = new WordListReader(wordDocumentFilename);
 			WordList list;
 			while ((list = wlr.read()) != null) {
-				for (String w : list) {
-					word.add(w);
+				for (List<String> l : list) {
+					for (String w : l) {
+						word.add(w);
+					}
 				}
 				lists.add(list);
 			}
@@ -141,12 +144,13 @@ public class Main {
 	}
 	
 	public static void printUsageAndExit() {
-		System.err.println("[Usage] java (-t | -f | -i | -d%mm%dd) (-v vertex_file) words_filename");
+		System.err.println("[Usage] java (-t | -f | -i | -n%d | -d%mm%dd) (-v vertex_file) words_filename");
 		System.err.println("[Options]");
 		System.err.println(" methods: if not set, topic map is selected as default value");
 		System.err.println("  -t calculate topic map. default value");
 		System.err.println("  -f calculate term frequency");
 		System.err.println("  -i calculate tf-idf and print at least average");
+		System.err.println("  -n%d calculate score using n-gram");
 		System.err.println("  -d%mm%dd calculate daily issue using month and day (e.g. -d0301 -> 1st March)");
 		System.err.println(" print option: if set, print index-value pair and to vertex_file, if not set, print string-value pair");
 		System.err.println("  -v filename string-index pair");
