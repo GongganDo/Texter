@@ -3,26 +3,27 @@ package net.caucse.texter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import net.caucse.paperlibrary.CountMap;
 import net.caucse.paperlibrary.IndexSet;
+import net.caucse.paperlibrary.ScoreMap;
 import net.caucse.paperlibrary.WordList;
 
 public class TFIDFMethod implements Method {
 	
-	private ArrayList<HashMap<Integer, Double>> score;
+	private ArrayList<ScoreMap<Integer>> score;
 	private ArrayList<Double> scoreAvg;
+	
+	private double docSize;
 
 	@Override
 	public void run(Collection<WordList> docs, IndexSet<String> word) {
-		score = new ArrayList<HashMap<Integer, Double>>();
+		score = new ArrayList<ScoreMap<Integer>>();
 		scoreAvg = new ArrayList<Double>();
 		
-		HashMap<Integer, Double> idf = new HashMap<Integer, Double>();
+		ScoreMap<Integer> idf = new ScoreMap<Integer>();
 		for (WordList doc : docs) {
 			HashSet<String> wordSet = new HashSet<String>();
 			for (List<String> list : doc) {
@@ -32,17 +33,13 @@ public class TFIDFMethod implements Method {
 					}
 					
 					int i = word.getIndex(w);
-					if (idf.containsKey(i)) {
-						idf.put(i, idf.get(i)+1);
-					} else {
-						idf.put(i, 1.0);
-					}
+					idf.add(i);
 					wordSet.add(w);
 				}
 			}
 		}
 		
-		int docSize = docs.size();
+		docSize = docs.size();
 		for (int i : idf.keySet()) {
 			idf.put(i, Math.log(docSize / idf.get(i)));
 		}
@@ -57,7 +54,7 @@ public class TFIDFMethod implements Method {
 					tf.add(i);
 				}
 			}
-			HashMap<Integer, Double> tfidf = new HashMap<Integer, Double>(word.size());
+			ScoreMap<Integer> tfidf = new ScoreMap<Integer>();
 			double tfidfMax = Double.MIN_VALUE, tfidfMin = Double.MAX_VALUE;
 			for (int i : tf.keySet()) {
 				double tfValue = Math.log(tf.get(i) + 1);
@@ -94,18 +91,18 @@ public class TFIDFMethod implements Method {
 		
 		boolean printString = !(words == null || words.isEmpty());
 		
-		for (HashMap<Integer, Double> tfidf : score) {
-			Iterator<Double> avgIter = scoreAvg.iterator();
+		for (ScoreMap<Integer> tfidf : score) {
+			//Iterator<Double> avgIter = scoreAvg.iterator();
 			for (int i : tfidf.keySet()) {
-				double value = tfidf.get(i);
-				double avg = avgIter.next();
-				if (value > avg) {
+				double value = tfidf.get(i) / docSize;
+				//double avg = avgIter.next();
+				//if (value > avg) {
 					if (printString) {
 						edge.printf("%s %f ", words.getAsIndex(i), value);
 					} else {
 						edge.printf("%d %f ", i, value);
 					}
-				}
+				//}
 			}
 			System.out.println();
 		}
