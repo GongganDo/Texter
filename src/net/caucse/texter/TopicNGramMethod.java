@@ -14,14 +14,14 @@ import net.caucse.paperlibrary.WordList;
 public class TopicNGramMethod implements Method {
 
 	private IndexSet<List<Integer>> ngramSet;
-	private CountMap<Integer> ngramFre;
+	ScoreMap<Integer> ngramFre;
 	
 	private int n;
 	
 	public TopicNGramMethod(int n) {
 		this.n = n;
 		this.ngramSet = new IndexSet<List<Integer>>();
-		this.ngramFre = new CountMap<Integer>();
+		this.ngramFre = new ScoreMap<Integer>();
 	}
 
 	@Override
@@ -74,19 +74,21 @@ public class TopicNGramMethod implements Method {
 						arr.add(word.getIndex(w));
 					}
 					
+					double maxTfidf = Double.MIN_VALUE;
+					
 					boolean ok = false;
 					for (int j : tfidf.keySet()) {
 						if (tfidf.get(j) > avg) {
 							if (arr.contains(j)) {
 								ok = true;
-								break;
+								maxTfidf = Math.max(maxTfidf, tfidf.get(j));
 							}
 						}
 					}
 					
 					if (ok) {
 						int idx = ngramSet.addReturnIndex(arr);
-						ngramFre.add(idx);
+						ngramFre.add(idx, maxTfidf);
 					}
 				}
 			}
@@ -115,9 +117,8 @@ public class TopicNGramMethod implements Method {
 					edge.printf("%d ", i);
 				}
 			}
-			//int idx = ngramSet.getIndex(list);
-			//System.out.println(ngramFre.get(idx));
-			System.out.println();
+			int idx = ngramSet.getIndex(list);
+			System.out.println(ngramFre.get(idx));
 		}
 	}
 
