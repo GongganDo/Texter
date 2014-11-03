@@ -3,8 +3,10 @@ package net.caucse.texter;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import net.caucse.paperlibrary.CountMap;
 import net.caucse.paperlibrary.IndexSet;
@@ -92,6 +94,18 @@ public class TopicNGramMethod implements Method {
 					}
 				}
 			}
+		}
+		
+		// normalize
+		double max = Collections.max(ngramFre.values());
+		double min = Collections.min(ngramFre.values());
+		
+		for (int i : ngramFre.keySet()) {
+		
+			double value = ngramFre.get(i);
+			value = (value - min) / (max - min);
+			if (Double.isNaN(value)) value = 0;
+			ngramFre.put(i, value);
 		}
 	}
 
